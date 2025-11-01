@@ -1,0 +1,39 @@
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    networks:
+      - app-network
+
+  employee-portal:
+    build: ./employee-portal
+    container_name: employee-portal
+    ports:
+      - "3000:443"   # HTTPS for employee-portal
+    env_file:
+      - ./employee-portal/.env
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  frontend-vite:
+    build: ./frontend-vite
+    container_name: frontend-vite
+    ports:
+      - "5173:80"
+    env_file:
+      - ./frontend-vite/.env
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
